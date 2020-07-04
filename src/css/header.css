@@ -1,0 +1,30 @@
+.header {
+  padding: 5px 0;
+  margin-bottom: 20px;
+}
+
+.header__inner {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.header__logo {
+  max-width: 25%;
+  width: 100%;
+}
+
+.header__menu {
+  max-width: 75%;
+  width: 100%;
+}
+
+.header__menu ul {
+  display: flex;
+  padding-left: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.header__menu ul li {
+  margin-right: 10px;
+}
