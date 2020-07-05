@@ -1,0 +1,30 @@
+.message {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    border-left: 3px solid;
+    padding: 7px 4px;
+    z-index: 9999;
+    display: none;
+}
+
+.message__success {
+    border-left-color:#155724;
+    color: #155724;
+    background-color: #d4edda;
+    display: block;
+}
+
+.message__warning {
+    border-left-color:#856404;
+    color: #856404;
+    background-color: #fff3cd;
+    display: block;
+}
+
+.message__error {
+    border-left-color:#721c24;
+    color: #721c24;
+    background-color: #f8d7da;
+    display: block;
+}
