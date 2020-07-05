@@ -28,3 +28,7 @@
 .header__menu ul li {
   margin-right: 10px;
 }
+
+.header__menu ul li a.is-active {
+  text-decoration: underline;
+}
