@@ -6,8 +6,8 @@ import axios from 'axios';
 
 import { NavLink } from 'react-router-dom';
 
-// const API_URL = 'https://phplaravel-382225-1341568.cloudwaysapps.com';
-const API_URL = 'http://api.local';
+const API_URL = 'https://phplaravel-382225-1341568.cloudwaysapps.com';
+// const API_URL = 'http://api.local';
 
 class Home extends React.Component {
     constructor(props) {
