@@ -7,7 +7,7 @@ const Home = () => (
         <Header />
         <main>
             <div className="container">
-                <div>List of sessions</div>
+                <h1 className="page-heaading"><span>List of sessions</span></h1>
             </div>
         </main>
         <Footer />
