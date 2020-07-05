@@ -60,7 +60,8 @@ class Home extends React.Component {
       })
       .catch((error) => {
         if (error.response && error.response.status === 422) { 
-          this.setState({ message_status: 'warning', message_text: error.response.data.partecipants_max_number[0] });
+          let message = (error.response.data.partecipants_max_number ? error.response.data.partecipants_max_number[0] : error.response.data.name[0]);    
+          this.setState({ message_status: 'warning', message_text: message });
         } else {
           console.log(error);
           this.setState({ message_status: 'error', message_text: 'Something went bananas, contact the administrator' });
