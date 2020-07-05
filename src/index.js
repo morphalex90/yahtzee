@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './css/general.css';
-import './css/header.css';
-import './css/footer.css';
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+
+import './css/style.scss';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
