@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export const Navbar = () => (
     <nav className="header__menu">
         <ul>
-            <li><Link to='/' key={1}>Sessions</Link></li>
-            <li><Link to='/about' key={9999}>About</Link></li>
+            <li><NavLink activeClassName="is-active" to='/' exact>Sessions</NavLink></li>
+            <li><NavLink activeClassName="is-active" to='/about'>About</NavLink></li>
+            <li><NavLink activeClassName="is-active" to='/rules'>Rules</NavLink></li>
         </ul>
     </nav>
 );
