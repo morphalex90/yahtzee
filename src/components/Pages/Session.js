@@ -30,11 +30,15 @@ class Session extends React.Component {
       this.getPlayers();
 
       ////// Pusher
-      var pusher = new Pusher('1717a821a4ce3aea5ba0', { cluster: 'eu' });
-      var channel = pusher.subscribe('session');
-      channel.bind('player-join-session', function(data) {
-        console.log(data);
-      });
+      try {
+        var pusher = new Pusher('1717a821a4ce3aea5ba0', { cluster: 'eu' });
+        var channel = pusher.subscribe('players');
+        channel.bind('player-join-session', data => {
+          this.setState({ players: [...this.state.players, data.message], playersCount: this.state.playersCount+1 });
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   
     async getPlayers() {
@@ -61,7 +65,7 @@ class Session extends React.Component {
       .post(API_URL+'/api/v1/yahtzee/session/player', data)
       .then((response) => {
         if( response.status === 200 ) {
-          this.setState({ message_status: 'success', message_text: 'You are now added to the game', playername: '' ,hide_join_form: true }, () => this.getPlayers());
+          this.setState({ message_status: 'success', message_text: 'You are now added to the game', playername: '' ,hide_join_form: true }); //, () => this.getPlayers()
         }
         this.setState({ isLoading: false });
       })
@@ -87,11 +91,11 @@ class Session extends React.Component {
                 <div>
                   <div>{this.state.playersCount} players</div>
                   <br />
-                  <div className="players">
+                  <div className="session_players">
                     {this.state.players.map(player =>
-                      <div key={player.id} className="player">
-                        <div>Name: {player.playername}</div>
-                        <div>Points: {player.points}</div>
+                      <div key={player.id} className="session-players__player" data-status={player.status}>
+                        <div className="session-players__player__name">{player.playername}</div>
+                        <div className="session-players__player__points"> ,points: {player.points}</div>
                       </div>
                     )}
                   </div>
