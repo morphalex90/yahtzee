@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import { NavLink } from 'react-router-dom';
 
-// import Pusher from 'pusher-js';
+import Pusher from 'pusher-js';
 
 import API_URL from './../API_URL';
 
@@ -27,13 +27,13 @@ class Home extends React.Component {
     componentDidMount() {
       this.getSessions();
 
-      ////// Pusher
+      //// Pusher
       // Pusher.logToConsole = true;
-      // var pusher = new Pusher('1717a821a4ce3aea5ba0', { cluster: 'eu' });
-      // var channel = pusher.subscribe('sessions');
-      // channel.bind('create-session', function(data) {
-      //   console.log(data);
-      // });
+      var pusher = new Pusher('1717a821a4ce3aea5ba0', { cluster: 'eu' });
+      var channel = pusher.subscribe('sessions');
+      channel.bind('create-session', data => {
+        this.setState({ sessions: [...this.state.sessions, data.message], sessionCount: this.state.sessionCount+1 }); // add new player to the list and update the players counter
+      });
     }
   
     async getSessions() {
