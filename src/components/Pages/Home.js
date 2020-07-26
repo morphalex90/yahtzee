@@ -6,8 +6,9 @@ import axios from 'axios';
 
 import { NavLink } from 'react-router-dom';
 
-const API_URL = 'https://phplaravel-382225-1341568.cloudwaysapps.com';
-// const API_URL = 'http://api.local';
+// import Pusher from 'pusher-js';
+
+import API_URL from './../API_URL';
 
 class Home extends React.Component {
     constructor(props) {
@@ -25,6 +26,14 @@ class Home extends React.Component {
   
     componentDidMount() {
       this.getSessions();
+
+      ////// Pusher
+      // Pusher.logToConsole = true;
+      // var pusher = new Pusher('1717a821a4ce3aea5ba0', { cluster: 'eu' });
+      // var channel = pusher.subscribe('sessions');
+      // channel.bind('create-session', function(data) {
+      //   console.log(data);
+      // });
     }
   
     async getSessions() {
@@ -77,19 +86,18 @@ class Home extends React.Component {
             <main>
                 <div className="container">
                     <h1 className="page-heaading"><span>List of sessions</span></h1>
-                    {/* <button onClick={this.getSessions}>Refresh</button> */}
                     {this.state.sessionCount !== null &&
                         <div>
                             <div>{this.state.sessionCount} sessions</div>
                             <br />
-                            {this.state.sessions.map(session =>
-                                <div key={session.id} className="session">
-                                    <NavLink to={'/session/' + session.id}>Enter session {session.name ? session.name : session.id}</NavLink>
-                                    <div className="session__status">{session.status}</div>
-                                    {/* <div className="session__name">{session.name}</div> */}
-                                    <div className="session__partecipants_max_number">{session.partecipants_max_number} max partecipants</div>
-                                </div>
-                            )}
+                            <div className="sessions">
+                              {this.state.sessions.map(session =>
+                                  <div key={session.id} className="session" data-status={session.status}>
+                                      <NavLink to={'/session/' + session.id}>Enter session {session.name ? session.name : session.id}</NavLink>
+                                      <div className="session__partecipants_max_number">users: XX / {session.partecipants_max_number !== 0 ? session.partecipants_max_number : '∞'}</div>
+                                  </div>
+                              )}
+                            </div>
                         </div>
                     }
 
