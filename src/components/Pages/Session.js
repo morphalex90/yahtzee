@@ -22,6 +22,7 @@ class Session extends React.Component {
         isLoading: true,
         message_status: '',
         message_text: '',
+        hide_join_form: false,
       };
     }
   
@@ -60,7 +61,7 @@ class Session extends React.Component {
       .post(API_URL+'/api/v1/yahtzee/session/player', data)
       .then((response) => {
         if( response.status === 200 ) {
-          this.setState({ message_status: 'success', message_text: 'New player added to the game', playername: '' }, () => this.getPlayers());
+          this.setState({ message_status: 'success', message_text: 'You are now added to the game', playername: '' ,hide_join_form: true }, () => this.getPlayers());
         }
         this.setState({ isLoading: false });
       })
@@ -78,40 +79,44 @@ class Session extends React.Component {
     render() {
       return (
         <React.Fragment>
-            <Header />
-            <main>
-                <div className="container">
-                    <h1 className="page-heaading"><span>Game #{this.props.match.params.session}</span></h1>
-                    {this.state.playersCount !== null &&
-                        <div>
-                            <div>{this.state.playersCount} players</div>
-                            <br />
-                            <div className="players">
-                              {this.state.players.map(player =>
-                                  <div key={player.id} className="player">
-                                      <div>Name: {player.playername}</div>
-                                      <div>Points: {player.points}</div>
-                                  </div>
-                              )}
-                            </div>
-                        </div>
-                    }
+          <Header />
+          <main>
+            <div className="container">
+              <h1 className="page-heaading"><span>Game #{this.props.match.params.session}</span></h1>
+              {this.state.playersCount !== null &&
+                <div>
+                  <div>{this.state.playersCount} players</div>
+                  <br />
+                  <div className="players">
+                    {this.state.players.map(player =>
+                      <div key={player.id} className="player">
+                        <div>Name: {player.playername}</div>
+                        <div>Points: {player.points}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              }
 
-                    <h2>Join session</h2>
-                    <form className="new-player" onSubmit={this.playerSubmit}>
-                        <div><label><input type="text" onChange={this.onChange} maxLength="40" name="playername" value={this.state.playername} required />Player name</label></div>
-                        <input type="hidden" name="session_id" value={this.props.match.params.session} />
-                        <button type="submit">Join game</button>
-                    </form>
+              {this.state.hide_join_form === false &&
+                <div>
+                  <h2>Join session</h2>
+                  <form className="new-player" onSubmit={this.playerSubmit}>
+                    <div><label><input type="text" onChange={this.onChange} maxLength="40" name="playername" value={this.state.playername} required />Player name</label></div>
+                    <input type="hidden" name="session_id" value={this.props.match.params.session} />
+                    <button type="submit">Join game</button>
+                  </form>
                 </div>
-            </main>
-            <Footer />
-            {this.state.isLoading === true && <div className="loading"></div> }
-            {this.state.message_status !== '' &&
-                <div className={'message message__' + this.state.message_status}>
-                    <div>{this.state.message_text}</div>
-                </div>
-            }
+              }
+            </div>
+          </main>
+          <Footer />
+          {this.state.isLoading === true && <div className="loading"></div> }
+          {this.state.message_status !== '' &&
+            <div className={'message message__' + this.state.message_status}>
+              <div>{this.state.message_text}</div>
+            </div>
+          }
         </React.Fragment>
       );
   
