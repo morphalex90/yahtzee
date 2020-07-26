@@ -1,0 +1,17 @@
+.session-players {
+
+    &__player {
+        background-color: rgba(255, 0, 0, 0.7);
+        margin-bottom: 10px;
+        padding: 15px;
+        display: flex;
+
+        &[data-status="waiting"] {
+            background-color: yellow;
+        }
+
+        &[data-status="ready"] {
+            background-color: green;
+        }
+    }
+}
