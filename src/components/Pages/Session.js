@@ -16,10 +16,11 @@ class Session extends React.Component {
         playersCount: null,
         players: [],
         playername: '',
+        player_id: (document.cookie.indexOf('player_id=') !== -1 ? document.cookie.split('; ').find(row => row.startsWith('player_id')).split('=')[1]: ''),
         isLoading: true,
         message_status: '',
         message_text: '',
-        hide_join_form: false,
+        hide_join_form: (document.cookie.indexOf('hide_join_form=') !== -1 ? document.cookie.split('; ').find(row => row.startsWith('hide_join_form')).split('=')[1]: false),
       };
     }
   
@@ -29,15 +30,22 @@ class Session extends React.Component {
       ////// Pusher
       try {
         var pusher = new Pusher('1717a821a4ce3aea5ba0', { cluster: 'eu' });
-        var channel = pusher.subscribe('players');
+        var channel = pusher.subscribe('session-'+this.props.match.params.session);
+
         channel.bind('player-join-session', data => { // player join session
-          this.setState({ players: [...this.state.players, data.message], playersCount: this.state.playersCount+1 }); // add new player to the list and update the players counter
+          this.setState({ players: [...this.state.players, data.player], playersCount: this.state.playersCount+1 }); // add new player to the list and update the players counter
+        });
+ 
+        channel.bind('player-leave-session', data => { // player leave session
+          let tempPlayers = this.state.players;
+          for(var i=0; i<tempPlayers.length; i++) { // search player inside array of players
+            if (parseInt(tempPlayers[i].id) === parseInt(data.player_id)) {
+              tempPlayers.splice(i, 1);
+            }
+          }
+          this.setState({ players: tempPlayers, playersCount: this.state.playersCount-1 }); // leave player from list and update the players counter
         });
 
-        channel.bind('player-leave-session', data => { // player leave session
-          // this.setState({ players: [...this.state.players, data.message], playersCount: this.state.playersCount-1 }); // leave player from list and update the players counter
-          console.log(data.message);
-        });
       } catch (error) {
         console.error(error);
       }
@@ -67,7 +75,9 @@ class Session extends React.Component {
       .post(API_URL+'/api/v1/yahtzee/session/player', data)
       .then((response) => {
         if( response.status === 200 ) {
-          this.setState({ message_status: 'success', message_text: 'You are now added to the game', playername: '' ,hide_join_form: true }); //, () => this.getPlayers()
+          this.setState({ message_status: 'success', message_text: 'You are now added to the game', player_id: response.data.id, playername: '' ,hide_join_form: true }); //, () => this.getPlayers()
+          document.cookie = 'player_id='+response.data.id+';max-age=604800';
+          document.cookie = 'hide_join_form=true;max-age=604800';
         }
         this.setState({ isLoading: false });
       })
@@ -124,17 +134,21 @@ class Session extends React.Component {
                         <div className="session-players__player__name">{player.playername}</div>
                         <div className="session-players__player__points"> ,points: {player.points}</div>
 
-                        <form className="session-players__leave" onSubmit={this.playerLeave}>
-                          <input type="hidden" name="player_id" value={player.id} />
-                          <input type="hidden" name="session_id" value={this.props.match.params.session} />
-                          <button type="submit">Leave session</button>
-                        </form>
+                        {parseInt(this.state.player_id) === parseInt(player.id) &&
+                          <React.Fragment>
+                            <form className="session-players__leave" onSubmit={this.playerLeave}>
+                              <input type="hidden" name="player_id" value={player.id} />
+                              <input type="hidden" name="session_id" value={this.props.match.params.session} />
+                              <button type="submit">Leave session</button>
+                            </form>
 
-                        <form className="session-players__ready" onSubmit={this.playerReady}>
-                          <input type="hidden" name="player_id" value={player.id} />
-                          <input type="hidden" name="session_id" value={this.props.match.params.session} />
-                          <button type="submit">Ready to play!</button>
-                        </form>
+                            <form className="session-players__ready" onSubmit={this.playerReady}>
+                              <input type="hidden" name="player_id" value={player.id} />
+                              <input type="hidden" name="session_id" value={this.props.match.params.session} />
+                              <button type="submit">Ready to play!</button>
+                            </form>
+                          </React.Fragment>
+                        }
 
                       </div>
                     )}
