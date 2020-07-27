@@ -103,6 +103,8 @@ class Session extends React.Component {
       .then((response) => {
         if( response.status === 200 ) {
           this.setState({ message_status: 'success', message_text: 'You now left the session', hide_join_form: false });
+          document.cookie = 'player_id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+          document.cookie = 'hide_join_form=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         }
         this.setState({ isLoading: false });
       })
